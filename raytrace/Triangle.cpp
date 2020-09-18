@@ -25,6 +25,8 @@ bool intersect_triangle(const Ray& ray,
   return false;
 }
 
+bool initialized = false;
+float3 normal;
 
 bool Triangle::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 {
@@ -53,10 +55,14 @@ bool Triangle::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) cons
 	//       Note that you need to do scope resolution (optix:: or just :: in front
 	//       of the function name) to choose between the OptiX implementation and
 	//       the function just above this one.
+	
+	if (!initialized) {
+		normal = normalize(cross(v1 - v0, v0 - v2));
+		initialized = true;
+	}
 	float dist, v, w;
-	float3 normal = normalize(cross(v1 - v0, v0 - v2));
 	optix::intersect_triangle(r, v0, v1, v2,normal ,dist, v, w);
-
+	
 	if (v < 0 || w < 0 || v + w>1) { return false; }
 
 	//set hit parameter

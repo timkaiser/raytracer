@@ -12,19 +12,22 @@ using namespace optix;
 
 bool RayTracer::trace_reflected(const Ray& in, const HitInfo& in_hit, Ray& out, HitInfo& out_hit) const
 {
-  // Initialize the reflected ray and trace it.
-  //
-  // Input:  in         (the ray to be reflected)
-  //         in_hit     (info about the ray-surface intersection)
-  //
-  // Output: out        (the reflected ray)
-  //         out_hit    (info about the reflected ray)
-  //
-  // Return: true if the reflected ray hit anything
-  //
-  // Hints: (a) There is a reflect function available in the OptiX math library.
-  //        (b) Set out_hit.ray_ior and out_hit.trace_depth.
-  return false;
+    // Initialize the reflected ray and trace it.
+    //
+    // Input:  in         (the ray to be reflected)
+    //         in_hit     (info about the ray-surface intersection)
+    //
+    // Output: out        (the reflected ray)
+    //         out_hit    (info about the reflected ray)
+    //
+    // Return: true if the reflected ray hit anything
+    //
+    // Hints: (a) There is a reflect function available in the OptiX math library.
+    //        (b) Set out_hit.ray_ior and out_hit.trace_depth.
+    out = Ray(in_hit.position, optix::reflect(in.direction, in_hit.shading_normal), 0, in.tmin, in.tmax);  
+    out_hit.ray_ior = in_hit.ray_ior;
+    out_hit.trace_depth = in_hit.trace_depth + 1;
+    return this->trace_to_closest(out, out_hit);
 }
 
 bool RayTracer::trace_refracted(const Ray& in, const HitInfo& in_hit, Ray& out, HitInfo& out_hit) const

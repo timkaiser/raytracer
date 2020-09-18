@@ -39,9 +39,6 @@ bool Sphere::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 	//            discriminant is zero separately.
 
 
-	if (r.origin.x == 0 && r.origin.z == 0) {
-		int a = 0;
-	}
 	float3 oc = r.origin - center;
 	float bhalf = dot(oc, r.direction);
 	float c = dot(oc, oc) - radius * radius;
