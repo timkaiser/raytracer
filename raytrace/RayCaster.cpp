@@ -23,7 +23,7 @@ float3 RayCaster::compute_pixel(unsigned int x, unsigned int y) const
 	scene->closest_hit(ray,*hitInfo);
 
     if (hitInfo->has_hit) {
-		return get_shader(*hitInfo)->shade(ray,*hitInfo);
+        return get_shader(*hitInfo)->shade(ray,*hitInfo);
 	}
 	else {
 		return get_background();

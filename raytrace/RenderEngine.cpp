@@ -125,7 +125,7 @@ void RenderEngine::load_files(int argc, char** argv)
     scene.add_sphere(make_float3(0.0f, 0.5f, 0.0f), 0.3f, "../models/default_scene.mtl", 2);
     scene.add_triangle(make_float3(-0.2f, 0.1f, 0.9f), make_float3(0.2f, 0.1f, 0.9f), make_float3(-0.2f, 0.1f, -0.1f), "../models/default_scene.mtl", 3);
     scene.add_light(new PointLight(&tracer, make_float3(M_PIf), make_float3(0.0f, 1.0f, 0.0f)));
-
+   
     init_view();
     float3 eye = make_float3(2.0f, 1.5f, 2.0f);
     float3 lookat = make_float3(0.0f, 0.5, 0.0f);
