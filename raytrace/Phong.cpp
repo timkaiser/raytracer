@@ -39,12 +39,14 @@ float3 Phong::shade(const Ray& r, HitInfo& hit, bool emit) const
   for(Light* light : lights){
       float3 light_dir, L;
       if (!light->sample(hit.position, light_dir, L)) continue;
-      float3 n = hit.shading_normal;
+	  // todo: test if angle is positive here
+	  float3 n = hit.shading_normal;
       float3 wi = light_dir;
       float3 wr = 2 * dot(wi, n) * n - wi;
       float3 wo = -r.direction;
       result += rho_d * M_1_PIf + rho_s * (s + 2) * (2 * M_1_PIf) * pow(dot(wo, wr), s) * L * dot(wi, n);
   }
+  
   result.x = clamp(result.x, 0.0f, 1.0f);
   result.y = clamp(result.y, 0.0f, 1.0f);
   result.z = clamp(result.z, 0.0f, 1.0f);

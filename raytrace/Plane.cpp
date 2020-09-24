@@ -57,8 +57,11 @@ bool Plane::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 	hit.shading_normal = get_normal();
 	hit.position = r.origin + dist * r.direction;
 	hit.material = &material;
-	hit.texcoord = make_float3(0, 0, 0); //TODO: change
-
+	if (material.has_texture) {
+		float u, v;
+		get_uv(hit.position, u, v);
+		hit.texcoord = make_float3(u, v, 0); //TODO: change
+	}
 
 	return true;
 }
@@ -77,18 +80,24 @@ Aabb Plane::compute_bbox() const
 
 void Plane::get_uv(const float3& hit_pos, float& u, float& v) const 
 { 
-  // Do an inverse mapping from hit position to texture coordinates.
-  //
-  // Input:  hit_pos    (position where a ray intersected the plane)
-  //
-  // Output: u          (texture coordinate in the tangent direction of the plane)
-  //         v          (texture coordinate in the binormal direction of the plane)
-  //
-  // Relevant data fields that are available (see Plane.h and OptiX math library reference)
-  // position           (origin of the plane)
-  // onb                (orthonormal basis of the plane: normal [n], tangent [b1], binormal [b2])
-  // tex_scale          (constant for scaling the texture coordinates)
-
-  u = 0.0f;
-  v = 0.0f;
+	// Do an inverse mapping from hit position to texture coordinates.
+	//
+	// Input:  hit_pos    (position where a ray intersected the plane)
+	//
+	// Output: u          (texture coordinate in the tangent direction of the plane)
+	//         v          (texture coordinate in the binormal direction of the plane)
+	//
+	// Relevant data fields that are available (see Plane.h and OptiX math library reference)
+	// position           (origin of the plane)
+	// onb                (orthonormal basis of the plane: normal [n], tangent [b1], binormal [b2])
+	// tex_scale          (constant for scaling the texture coordinates)
+	/*Compute texture coordinates for planes. Do this in the function get_uv of the file Plane.cpp. 
+	Compute the texture coordinates by finding the vector from the plane origin (position) to the intersection
+	  point and projecting it onto the tangent and binormal of the plane, respectively (this is an inverse mapping). 
+	  Use the texture scaling factor (tex_scale) to scale the texture coordinates. In the function
+	  intersect, use material.has_texture to find out whether a texture was loaded for a plane. If yes,
+	  call the function get_uv to get the texture coordinates.*/
+	float3 xx0 = hit_pos - position;
+	u = dot(onb.m_tangent, xx0) * tex_scale;
+	v = dot(onb.m_binormal, xx0) * tex_scale;
 }

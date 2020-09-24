@@ -41,7 +41,7 @@ bool Sphere::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 
 	float3 oc = r.origin - center;
 	float bhalf = dot(oc, r.direction);
-	float c = dot(oc, oc) - radius * radius;
+	float c = dot(oc, oc) - radius * radius; 
 	float b2c = bhalf * bhalf - c;
 	if (b2c < 0) { return false; }
 
@@ -55,8 +55,11 @@ bool Sphere::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 	hit.geometric_normal = normal;
 	hit.shading_normal = normal;
 	hit.material = &material;
-	hit.texcoord = make_float3(0, 0, 0); //TODO: change	
-
+	if (material.has_texture) {
+		float u = 0.5 + atan2(normal.z, normal.x) * 0.5 * M_1_PIf;
+		float v = 0.5 - asin(normal.y) * M_1_PIf;
+		hit.texcoord = make_float3(u, v, 0); //TODO: change	
+	}
 	return true;
 }
 

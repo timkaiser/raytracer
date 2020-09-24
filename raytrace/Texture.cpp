@@ -73,7 +73,7 @@ float4 Texture::sample_nearest(const float3& texcoord) const
 
 float4 Texture::sample_linear(const float3& texcoord) const
 {
-  //return sample_nearest(texcoord);
+  return sample_nearest(texcoord);
   
   if(!fdata)
     return make_float4(0.0f);
