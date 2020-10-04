@@ -37,8 +37,27 @@ bool AreaLight::sample(const float3& pos, float3& dir, float3& L) const
   //        the light source bounding box.
   //        (b) Use the function get_emission(...) to get the radiance
   //        emitted by a triangle in the mesh.
+  float3 intensity;
+  for (int i = 0; i < mesh->get_no_of_primitives(); i++) {
+	  intensity = get_emission(i) / mesh->face_areas[i];
+  }
 
-  return false;  
+  dir = (mesh->compute_bbox().center() - make_float3(0, 0.1f,0)) - pos;
+  float dist = length(dir);
+  dir = normalize(dir);
+
+  //shadows
+  if (shadows) {
+	  Ray shadowray = Ray(pos, dir, 0, 0.001f, dist);
+	  HitInfo hit;
+	  tracer->trace_to_any(shadowray, hit);
+	  if (hit.has_hit) { return false; }
+  }
+
+  //lighting
+  L = intensity / pow(dist, 2);
+
+  return true;
 }
 
 bool AreaLight::emit(Ray& r, HitInfo& hit, float3& Phi) const

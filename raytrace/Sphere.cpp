@@ -5,6 +5,7 @@
 #include <optix_world.h>
 #include "HitInfo.h"
 #include "Sphere.h"
+#include "InvSphereMap.h"
 
 using namespace optix;
 
@@ -55,10 +56,11 @@ bool Sphere::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 	hit.geometric_normal = normal;
 	hit.shading_normal = normal;
 	hit.material = &material;
+	//InvSphereMap map = InvSphereMap();
+	//float u, v;
+	//map.project_direction(normal, u, v);
 	if (material.has_texture) {
-		float u = 0.5 + atan2(normal.z, normal.x) * 0.5 * M_1_PIf;
-		float v = 0.5 - asin(normal.y) * M_1_PIf;
-		hit.texcoord = make_float3(u, v, 0); //TODO: change	
+		hit.texcoord = make_float3(hit.shading_normal.x, hit.shading_normal.y, hit.shading_normal.z);
 	}
 	return true;
 }
