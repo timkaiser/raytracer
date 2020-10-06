@@ -38,7 +38,7 @@ float3 Lambertian::shade(const Ray& r, HitInfo& hit, bool emit) const
   for (Light* light : lights) {
 	  float3 resultL;
 	  for (int i = 0; i < light->get_no_of_samples(); i++) {
-		  result += light->sample(hit.position, dir, L) * L * fmax(0.0f, dot(hit.shading_normal, dir));
+		  resultL += light->sample(hit.position, dir, L) * L * fmax(0.0f, dot(hit.shading_normal, dir));
 	  }
 
 	  result += resultL / light->get_no_of_samples();

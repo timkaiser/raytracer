@@ -52,19 +52,17 @@ bool TriMesh::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 	//        (c) Use the function has_normals() to check if the mesh has
 	//        vertex normals for computing the shading normal. If not, use
 	//        the geometric normal as shading normal.
-	float3 normal;
+	float3 normal, n;
 	float t, beta, gamma;
 
-	if (!optix::intersect_triangle(r, geometry.vertex(face.x), geometry.vertex(face.y), geometry.vertex(face.z), normal, t, beta, gamma) || t < r.tmin || t > r.tmax) { return false; }
+	if (!optix::intersect_triangle(r, geometry.vertex(face.x), geometry.vertex(face.y), geometry.vertex(face.z), n, t, beta, gamma) || t < r.tmin || t > r.tmax) { return false; }
 
 	//set hit parameter
 	hit.has_hit = true;
 	hit.dist = t;
 
-	hit.geometric_normal = normal;
-	hit.shading_normal = normal;// has_normals() ?
-			//(1-beta-gamma) * normals.vertex(face.x) + beta * normals.vertex(face.y) + gamma * normals.vertex(face.z) 
-			//: normal;
+	hit.geometric_normal = normals.vertex(face.x);
+    hit.shading_normal = has_normals() ? normalize((1 - beta - gamma) * normals.vertex(face.x) + beta * normals.vertex(face.y) + gamma * normals.vertex(face.z)) : normals.vertex(face.x);
 
 
 	hit.position = r.origin + t * r.direction;

@@ -31,7 +31,7 @@ bool Directional::sample(const float3& pos, float3& dir, float3& L) const
 	
 	//shadows
 	if (shadows) {
-		Ray shadowray = Ray(pos, -light_dir, 0, 0.001f, _I16_MAX);
+		Ray shadowray = Ray(pos, -light_dir, 0, 0.001f);
 		HitInfo hit;
 		tracer->trace_to_any(shadowray, hit);
 		if (hit.has_hit) { return false; }
@@ -39,6 +39,7 @@ bool Directional::sample(const float3& pos, float3& dir, float3& L) const
 
 	//lighting
 	L = emission;
+    dir = -light_dir;
 
 	return true;
 }

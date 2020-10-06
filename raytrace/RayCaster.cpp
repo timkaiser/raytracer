@@ -26,8 +26,8 @@ float3 RayCaster::compute_pixel(unsigned int x, unsigned int y) const
         //if (hitInfo->texcoord.x < 0 || hitInfo->texcoord.y < 0 || hitInfo->texcoord.z < 0) { return make_float3(1, 0, 0); }
         //if (abs(fmod(hitInfo->texcoord.x, 0.2f)) < 0.003 || abs(fmod(hitInfo->texcoord.y, 0.2f)) < 0.003) { return make_float3(hitInfo->texcoord.x, hitInfo->texcoord.y, 1); }
         //return make_float3(fmod(hitInfo->texcoord.x, 0.05f), fmod(hitInfo->texcoord.y, 0.05f), 0);
-		return hitInfo->shading_normal;// texcoord;
-		return get_shader(*hitInfo)->shade(ray, *hitInfo);
+		//return hitInfo->shading_normal;// texcoord;
+        return get_shader(*hitInfo)->shade(ray, *hitInfo);
 	}
 	else {
 		return get_background();
