@@ -39,7 +39,10 @@ bool AreaLight::sample(const float3& pos, float3& dir, float3& L) const
   //        emitted by a triangle in the mesh.
   float3 intensity = make_float3(0);
   for (int i = 0; i < mesh->get_no_of_primitives(); i++) {
-	  intensity += get_emission(i) / mesh->face_areas[i];
+	  //intensity += get_emission(i) / mesh->face_areas[i];
+	  uint3 face = normals.face(i);
+	  float3 normal = normalize(normals.vertex(face.x) + normals.vertex(face.y) + normals.vertex(face.z));
+	  intensity += dot(-dir, normal) * get_emission(i) * mesh->face_areas[i];
   }
 
   dir = (mesh->compute_bbox().center() - make_float3(0,0.001f,0)) - pos;

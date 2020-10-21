@@ -37,7 +37,7 @@ void BspTree::init(const vector<Object3D*>& geometry, const std::vector<const Pl
 
 bool BspTree::closest_hit(Ray& r, HitInfo& hit) const
 {
-    // Call closest_plane(...) and intersect_node(...) instead of
+	// Call closest_plane(...) and intersect_node(...) instead of
     // Accelerator::closest_hit(...) to use the BSP tree.
     // Using intersect_min_max(...) before intersect_node(...) gives
     // a good speed-up in many scenes.
@@ -45,16 +45,16 @@ bool BspTree::closest_hit(Ray& r, HitInfo& hit) const
     HitInfo hitTmp;
     closest_plane(r, hitTmp);
     
-    bool hit_node =  intersect_node(r, hit, *root);
+    intersect_node(r, hit, *root);
 
     hit = !hitTmp.has_hit || (hit.has_hit && hit.dist < hitTmp.dist) ? hit : hitTmp;
     
-    return hit_node;
+    return hit.has_hit;
 }
 
 bool BspTree::any_hit(Ray& r, HitInfo& hit) const
 {
-    // Call any_plane(...) and intersect_node(...) instead of
+	// Call any_plane(...) and intersect_node(...) instead of
     // Accelerator::any_hit(...) to use the BSP tree.
     // Using intersect_min_max(...) before intersect_node(...) gives
     // a good speed-up in many scenes.

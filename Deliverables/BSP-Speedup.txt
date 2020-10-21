@@ -1,0 +1,48 @@
+## CORNELL #####################################
+../models/CornellBox.obj
+No. of triangles: 12
+../models/CornellBlocks.obj
+No. of triangles: 24
+
+Cornell normal:
+Raytracing.......... - 3.911 secs
+Raytracing.......... - 4.599 secs
+Raytracing.......... - 4.624 secs
+Raytracing.......... - 2.467 secs
+
+Cornell BSP Tree:
+Raytracing.......... - 1.783 secs
+Raytracing.......... - 2.501 secs
+Raytracing.......... - 2.818 secs
+Raytracing.......... - 1.95 secs
+Raytracing.......... - 0.761 secs
+Raytracing.......... - 2.579 secs
+
+## TEAPOT #######################################
+Loading ../models/teapot.obj
+No. of triangles: 6320
+
+Teapot normal:
+Raytracing.......... - 57.081 secs
+Raytracing.......... - 53.213 secs
+ 
+Teapot BSP Tree:
+Raytracing.......... - 1.595 secs
+Raytracing.......... - 1.398 secs
+Raytracing.......... - 1.291 secs
+Raytracing.......... - 1.323 secs
+Raytracing.......... - 1.35 secs
+
+## BUNNY #########################################
+Loading ../models/bunny.obj
+No. of triangles: 69451
+
+Bunny normal:
+Raytracing.......... - 827.943 secs
+
+Bunny BSP Tree:
+Raytracing.......... - 0.366 secs
+Raytracing.......... - 0.35 secs
+Raytracing.......... - 0.837 secs
+Raytracing.......... - 0.834 secs
+Raytracing.......... - 0.79 secs

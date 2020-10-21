@@ -61,8 +61,8 @@ bool TriMesh::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 	hit.has_hit = true;
 	hit.dist = t;
 
-	hit.geometric_normal = normals.vertex(face.x);
-    hit.shading_normal = has_normals() ? normalize((1 - beta - gamma) * normals.vertex(face.x) + beta * normals.vertex(face.y) + gamma * normals.vertex(face.z)) : normals.vertex(face.x);
+	hit.geometric_normal = normalize(n);
+	hit.shading_normal = has_normals() ? normalize((1 - beta - gamma) * normals.vertex(face.x) + beta * normals.vertex(face.y) + gamma * normals.vertex(face.z)) : normals.vertex(face.x);
 
 
 	hit.position = r.origin + t * r.direction;
