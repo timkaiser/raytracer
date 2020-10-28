@@ -33,6 +33,7 @@ float3 Glossy::shade(const Ray& r, HitInfo& hit, bool emit) const
 
     if (hit.trace_depth >= max_depth)
         return make_float3(0.0f);
+	//return Mirror::shade(r, hit, emit);
 
     float R;
     Ray reflected, refracted;
@@ -45,7 +46,6 @@ float3 Glossy::shade(const Ray& r, HitInfo& hit, bool emit) const
     }
     return result;
     
-    //return Mirror::shade(r, hit, emit);
     //return Transparent::shade(r, hit, emit);
 
     //return Phong::shade(r, hit, emit);

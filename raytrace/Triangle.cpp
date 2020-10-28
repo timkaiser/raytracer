@@ -56,20 +56,18 @@ bool Triangle::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) cons
 	//       of the function name) to choose between the OptiX implementation and
 	//       the function just above this one.
 	
-	if (!initialized) {
-		normal = normalize(cross(v1 - v0, v0 - v2));
-		initialized = true;
-	}
+	//if (!initialized) {
+	//	normal = normalize(cross(v1 - v0, v0 - v2));
+	//	initialized = true;
+	//}
 	float dist, v, w;
-	optix::intersect_triangle(r, v0, v1, v2,normal ,dist, v, w);
-	
-	if (v < 0 || w < 0 || v + w>1) { return false; }
+	if (!optix::intersect_triangle(r, v0, v1, v2, normal, dist, v, w)) { return false; }
 
 	//set hit parameter
 	hit.has_hit = true;
 	hit.dist = dist;
-	hit.geometric_normal = normal;
-	hit.shading_normal = normal;
+	hit.geometric_normal = normalize(normal);
+	hit.shading_normal = hit.geometric_normal;
 	hit.position = r.origin + dist * r.direction;
 	hit.material = &material;
 	hit.texcoord = make_float3(0, 0, 0); //TODO: change

@@ -47,7 +47,13 @@ bool Sphere::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 	if (b2c < 0) { return false; }
 
 	float dist = -bhalf - sqrt(b2c);
-	if (dist < r.tmin || dist > r.tmax) { return false; }
+	if (dist < r.tmin || dist > r.tmax) { 
+		return false;
+		dist = -bhalf + sqrt(b2c);
+		if (dist < r.tmin || dist > r.tmax) {
+			return false;
+		}
+	}
 	
 	hit.has_hit = true;
 	hit.position = r.origin + dist * r.direction;

@@ -593,7 +593,7 @@ void RenderEngine::keyboard(unsigned char key, int x, int y)
     render_engine.decrement_pixel_subdivs();
     break;
   // Press '*' to apply tone mapping
-  case '*':
+  case '#':
     render_engine.apply_tone_map();
     break;
   // Press '/' to unapply tone mapping

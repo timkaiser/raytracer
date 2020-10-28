@@ -18,20 +18,21 @@ float3 RayCaster::compute_pixel(unsigned int x, unsigned int y) const
 
 	Camera cam = *scene->get_camera();
 	
-	HitInfo* hitInfo = new HitInfo();
-	Ray ray = cam.get_ray(ip_coords);
-	scene->closest_hit(ray,*hitInfo);
+	float3 result = make_float3(0);
+	for (float2 jit : jitter) {
+		HitInfo* hitInfo = new HitInfo();
+		Ray ray = cam.get_ray(ip_coords+jit);
+		scene->closest_hit(ray, *hitInfo);
+		if (hitInfo->has_hit) {
+			result += get_shader(*hitInfo)->shade(ray, *hitInfo);
+		}
+		else {
+			result += get_background();
+		}
+	}
 
-    if (hitInfo->has_hit) {
-        //if (hitInfo->texcoord.x < 0 || hitInfo->texcoord.y < 0 || hitInfo->texcoord.z < 0) { return make_float3(1, 0, 0); }
-        //if (abs(fmod(hitInfo->texcoord.x, 0.2f)) < 0.003 || abs(fmod(hitInfo->texcoord.y, 0.2f)) < 0.003) { return make_float3(hitInfo->texcoord.x, hitInfo->texcoord.y, 1); }
-        //return make_float3(fmod(hitInfo->texcoord.x, 0.05f), fmod(hitInfo->texcoord.y, 0.05f), 0);
-		//return hitInfo->shading_normal;// texcoord;
-        return get_shader(*hitInfo)->shade(ray, *hitInfo);
-	}
-	else {
-		return get_background();
-	}
+	return result / (subdivs *subdivs);
+
   // Use the scene and its camera
   // to cast a ray that computes the color of the pixel at index (x, y).
   //
