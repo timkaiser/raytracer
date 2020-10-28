@@ -22,6 +22,7 @@ float3 MCGlossy::shade(const Ray& r, HitInfo& hit, bool emit) const
   float3 rho_d = get_diffuse(hit);
   float3 result = make_float3(0.0f);
 
+  float samples = 1.0f;
   // Implement a path tracing shader here.
   //
   // Input:  r          (the ray that hit the material)
@@ -37,6 +38,16 @@ float3 MCGlossy::shade(const Ray& r, HitInfo& hit, bool emit) const
   //
   // Hint: Use the function shade_new_ray(...) to pass a newly traced ray to
   //       the shader for the surface it hit.
+  
+  for (int i = 0; i < samples; i++) {
+	Ray rayTemp = Ray(hit.position, sample_cosine_weighted(hit.shading_normal), 0, 0.001f, RT_DEFAULT_MAX);
+	HitInfo hitTemp;
+	hitTemp.trace_depth = hit.trace_depth + 1;
+	tracer->trace_to_closest(rayTemp, hitTemp);
+	result += shade_new_ray(rayTemp, hitTemp, false);
+  }
+
+  result *= rho_d / samples;
 
   return result + Phong::shade(r, hit, emit);
 }

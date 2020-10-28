@@ -16,7 +16,7 @@ using namespace optix;
 float3 Lambertian::shade(const Ray& r, HitInfo& hit, bool emit) const
 {
   const float3 rho_d = get_diffuse(hit);
-  float3 result = make_float3(0.0f,0.5f,0.0f);
+  float3 result = make_float3(0.0f,0.0f,0.0f);
   
   // Implement Lambertian reflection here.
   //
@@ -38,7 +38,9 @@ float3 Lambertian::shade(const Ray& r, HitInfo& hit, bool emit) const
   for (Light* light : lights) {
 	  float3 resultL;
 	  for (int i = 0; i < light->get_no_of_samples(); i++) {
-		  resultL += light->sample(hit.position, dir, L) * L * fmax(0.0f, dot(hit.shading_normal, dir));
+		  if (light->sample(hit.position, dir, L)) {
+			  resultL += L * fmax(0.0f, dot(hit.shading_normal, dir));
+		  }
 	  }
 
 	  result += resultL / light->get_no_of_samples();

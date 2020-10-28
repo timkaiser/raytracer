@@ -38,6 +38,10 @@ bool AreaLight::sample(const float3& pos, float3& dir, float3& L) const
   //        (b) Use the function get_emission(...) to get the radiance
   //        emitted by a triangle in the mesh.
   float3 intensity = make_float3(0);
+  dir = mesh->compute_bbox().center() - pos;
+  float dist = length(dir);
+  dir = normalize(dir);
+  
   for (int i = 0; i < mesh->get_no_of_primitives(); i++) {
 	  //intensity += get_emission(i) / mesh->face_areas[i];
 	  uint3 face = normals.face(i);
@@ -45,13 +49,9 @@ bool AreaLight::sample(const float3& pos, float3& dir, float3& L) const
 	  intensity += dot(-dir, normal) * get_emission(i) * mesh->face_areas[i];
   }
 
-  dir = (mesh->compute_bbox().center() - make_float3(0,0.001f,0)) - pos;
-  float dist = length(dir);
-  dir = normalize(dir);
-
   //shadows
   if (shadows) {
-	  Ray shadowray = Ray(pos, dir, 0, 0.001f, dist);
+	  Ray shadowray = Ray(pos, dir, 0, 0.0001f, dist-0.0001f);
 	  HitInfo hit;
 	  tracer->trace_to_any(shadowray, hit);
 	  if (hit.has_hit) { return false; }

@@ -21,6 +21,7 @@ using namespace optix;
 bool TriMesh::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 {
 	const uint3& face = geometry.face(prim_idx);
+	const uint3& nface = normals.face(prim_idx);
 
 	// Implement ray-triangle intersection here.
 	//
@@ -62,7 +63,7 @@ bool TriMesh::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 	hit.dist = t;
 
 	hit.geometric_normal = normalize(n);
-	hit.shading_normal = has_normals() ? normalize((1 - beta - gamma) * normals.vertex(face.x) + beta * normals.vertex(face.y) + gamma * normals.vertex(face.z)) : normals.vertex(face.x);
+	hit.shading_normal = has_normals() ? normalize((1 - beta - gamma) * normals.vertex(nface.x) + beta * normals.vertex(nface.y) + gamma * normals.vertex(nface.z)) : hit.geometric_normal;
 
 
 	hit.position = r.origin + t * r.direction;

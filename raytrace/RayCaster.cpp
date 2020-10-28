@@ -24,6 +24,9 @@ float3 RayCaster::compute_pixel(unsigned int x, unsigned int y) const
 		Ray ray = cam.get_ray(ip_coords+jit);
 		scene->closest_hit(ray, *hitInfo);
 		if (hitInfo->has_hit) {
+			if (x == 150 && y == 450) {
+				int a = 5;
+			}
 			result += get_shader(*hitInfo)->shade(ray, *hitInfo);
 		}
 		else {

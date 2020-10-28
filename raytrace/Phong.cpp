@@ -37,18 +37,19 @@ float3 Phong::shade(const Ray& r, HitInfo& hit, bool emit) const
   // Hint: Call the sample function associated with each light in the scene.
   float3 result = make_float3(0);
   for(Light* light : lights){
-      float3 light_dir, L;
-      if (!light->sample(hit.position, light_dir, L)) continue;
-	  // todo: test if angle is positive here
-	  float3 n = hit.shading_normal;
-      float3 wi = light_dir;
-      float3 wr = 2 * dot(wi, n) * n - wi;
-      float3 wo = -r.direction;
-      result += rho_d * M_1_PIf + rho_s * (s + 2) * (2 * M_1_PIf) * pow(dot(wo, wr), s) * L * dot(wi, n);
+	  float3 Lr = make_float3(0.0f);
+	  float num_samples = light->get_no_of_samples();
+	  for (int i = 0; i < num_samples; i++) {
+		  float3 light_dir, L;
+		  if (!light->sample(hit.position, light_dir, L)) continue;
+		  // todo: test if angle is positive here
+		  float3 n = hit.shading_normal;
+		  float3 wi = light_dir;
+		  float3 wr = optix::reflect(wi, n);//2 * dot(wi, n) * n - wi;
+		  float3 wo = -normalize(r.direction);
+		  Lr += (rho_d * M_1_PIf + rho_s * (s + 2) * (0.5f * M_1_PIf) * pow(fmax(0,dot(wo, wr)), s)) * L * fmax(0,dot(wi, n));
+	  }
+	  result += (Lr/num_samples);
   }
-  
-  result.x = clamp(result.x, 0.0f, 1.0f);
-  result.y = clamp(result.y, 0.0f, 1.0f);
-  result.z = clamp(result.z, 0.0f, 1.0f);
-  return result;
+  return result + Emission::shade(r, hit, emit);
 }
