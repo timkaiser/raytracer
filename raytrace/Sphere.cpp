@@ -48,7 +48,7 @@ bool Sphere::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 
 	float dist = -bhalf - sqrt(b2c);
 	if (dist < r.tmin || dist > r.tmax) { 
-		return false;
+		//return false; //skip code below because it doesn't work
 		dist = -bhalf + sqrt(b2c);
 		if (dist < r.tmin || dist > r.tmax) {
 			return false;

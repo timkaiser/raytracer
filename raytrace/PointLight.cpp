@@ -60,7 +60,7 @@ bool PointLight::emit(Ray& r, HitInfo& hit, float3& Phi) const
   //
   // Relevant data fields that are available (see PointLight.h and Light.h):
   // tracer     (pointer to ray tracer)
-  // light_pos  (position of the point light)
+  // light_pos  (position of the point light) x
   // intensity  (intensity of the emitted light)
   //
   // Hint: When sampling the ray direction, use the function
@@ -72,5 +72,19 @@ bool PointLight::emit(Ray& r, HitInfo& hit, float3& Phi) const
   
   // If a surface was hit, compute Phi and return true
 
-  return false;
+	float3 direction;
+	do
+	{
+		direction.x = 2.0f * mt_random() - 1.0f;
+		direction.y = 2.0f * mt_random() - 1.0f;
+		direction.z = 2.0f * mt_random() - 1.0f;
+	} while (dot(direction, direction) > 1.0f);
+	direction = normalize(direction);
+	
+	r = Ray(light_pos, direction, 0, 1e-4, RT_DEFAULT_MAX);
+	if (!tracer->trace_to_closest(r, hit)) { return false; }
+
+	Phi = intensity * 4 * M_PIf;
+
+	return true;
 }

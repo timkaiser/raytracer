@@ -42,10 +42,10 @@ float3 Phong::shade(const Ray& r, HitInfo& hit, bool emit) const
 	  for (int i = 0; i < num_samples; i++) {
 		  float3 light_dir, L;
 		  if (!light->sample(hit.position, light_dir, L)) continue;
-		  // todo: test if angle is positive here
+		  
 		  float3 n = hit.shading_normal;
 		  float3 wi = light_dir;
-		  float3 wr = optix::reflect(wi, n);//2 * dot(wi, n) * n - wi;
+		  float3 wr = optix::reflect(-wi, n);//2 * dot(wi, n) * n - wi;
 		  float3 wo = -normalize(r.direction);
 		  Lr += (rho_d * M_1_PIf + rho_s * (s + 2) * (0.5f * M_1_PIf) * pow(fmax(0,dot(wo, wr)), s)) * L * fmax(0,dot(wi, n));
 	  }

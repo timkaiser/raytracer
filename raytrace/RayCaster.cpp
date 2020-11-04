@@ -16,18 +16,15 @@ float3 RayCaster::compute_pixel(unsigned int x, unsigned int y) const
 {
     float2 ip_coords = make_float2(x, y) * win_to_ip + lower_left;
 
-	Camera cam = *scene->get_camera();
+	Camera* cam = scene->get_camera();
 	
 	float3 result = make_float3(0);
 	for (float2 jit : jitter) {
-		HitInfo* hitInfo = new HitInfo();
-		Ray ray = cam.get_ray(ip_coords+jit);
-		scene->closest_hit(ray, *hitInfo);
-		if (hitInfo->has_hit) {
-			if (x == 150 && y == 450) {
-				int a = 5;
-			}
-			result += get_shader(*hitInfo)->shade(ray, *hitInfo);
+		HitInfo hitInfo;
+		Ray ray = cam->get_ray(ip_coords+jit);
+		scene->closest_hit(ray, hitInfo);
+		if (hitInfo.has_hit) {
+			result += get_shader(hitInfo)->shade(ray, hitInfo);
 		}
 		else {
 			result += get_background();
