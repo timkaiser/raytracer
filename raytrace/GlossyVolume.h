@@ -21,6 +21,7 @@ public:
   { }
 
   virtual optix::float3 shade(const optix::Ray& r, HitInfo& hit, bool emit = true) const;
+  virtual optix::float3 shadePhong(const optix::Ray& r, HitInfo& hit, bool emit = true) const;
 };
 
 #endif // GLOSSYVOLUME_H
