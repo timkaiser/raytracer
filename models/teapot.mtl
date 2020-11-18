@@ -3,6 +3,7 @@ Ka 0.0 0.0 0.0
 Kd 0.9 0.9 0.9
 Ks 0.01 0.01 0.01
 Ns 45
+map_kd brass.binary
 illum 1
 
 newmtl marble

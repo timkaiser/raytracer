@@ -10,7 +10,7 @@ using namespace optix;
 float3 rotate_vector(const float3& vector, const float3& axis, float angle)
 {
   // Implement quaternion-based rotation of a vector by an angle around an axis
-  return make_float3(0.0f);
+	return cos(angle) * vector + sin(angle) * cross(axis, vector) + (1 - cos(angle)) * dot(axis, vector) * axis;
 }
 
 // Convert vectors in tangent space to half/difference coordinates
@@ -18,12 +18,16 @@ void vectors_to_half_diff_coords(const float3& in, const float3& out,
   float& theta_half, float& phi_half, float& theta_diff, float& phi_diff)
 {
   // compute halfway vector
-
+	float3 h = normalize(in + out);
   // compute theta_half, phi_half
-
+	theta_half = acos(h.z);
+	phi_half = atan2(h.y, h.x);
   // compute diff vector
-
+	float3 d = rotate_vector(in, make_float3(0, 0, 1), -phi_half);
+	d = rotate_vector(d, make_float3(0, 1, 0), -theta_half);
   // compute theta_diff, phi_diff	
+	theta_diff = acos(d.z);
+	phi_diff = atan2(d.y, d.x);
 }
 
 float3 lookup_brdf_val(const float* brdf, const float3& n, const float3& normalized_wi, const float3& normalized_wo)
