@@ -42,8 +42,8 @@ namespace
 //////////////////////////////////////////////////////////////////////
 
 RenderEngine::RenderEngine() 
-  : win(optix::make_uint2(512, 512)),                        // Default window size
-    res(optix::make_uint2(512, 512)),                        // Default render resolution
+  : win(optix::make_uint2(768, 512)),                        // Default window size
+    res(optix::make_uint2(768, 512)),                        // Default render resolution
     image(res.x*res.y),
     image_tex(0),
     mouse_state(GLUT_UP),
@@ -58,10 +58,10 @@ RenderEngine::RenderEngine()
     light_pow(optix::make_float3(M_PIf)),                    // Power of the default light
     light_dir(optix::make_float3(-1.0f)),                    // Direction of the default light
     default_light(&tracer, light_pow, light_dir),            // Construct default light
-    use_default_light(true),                                 // Choose whether to use the default light or not
+    use_default_light(false),                                 // Choose whether to use the default light or not
     shadows_on(true),
     background(optix::make_float3(0.1f, 0.3f, 0.6f)),        // Background color
-    bgtex_filename(""),                                      // Background texture file name
+    bgtex_filename("../models/winter_evening_1k.hdr"),       // Background texture file name
     current_shader(0),
     lambertian(scene.get_lights()),
     photon_caustics(&tracer, scene.get_lights(), 1.0f, 50),  // Max distance and number of photons to search for
@@ -187,10 +187,10 @@ void RenderEngine::init_tracer()
     else
       bgtex.load(bgtex_filename.c_str());
     tracer.set_background(&bgtex);
-    //PanoramicLight* envlight = new PanoramicLight(&tracer, bgtex, 1);
-    //cout << "Adding light source: " << envlight->describe() << endl;
-    //scene.add_light(envlight);
-    //scene.add_plane(make_float3(0.0f), make_float3(0.0f, 1.0f, 0.0f), "../models/plane.mtl", 4); // holdout plane
+    PanoramicLight* envlight = new PanoramicLight(&tracer, bgtex, 1);
+    cout << "Adding light source: " << envlight->describe() << endl;
+    scene.add_light(envlight);
+    scene.add_plane(make_float3(0.0f), make_float3(0.0f, 1.0f, 0.0f), "../models/plane.mtl", 4); // holdout plane
   }
 
   // Set shaders
