@@ -10,7 +10,7 @@
 using namespace optix;
 
 float3 Holdout::shade(const Ray& r, HitInfo& hit, bool emit) const
-{
+{ 
   float ambient = 0.0f;
 
   // Implement ambient occlusion here.

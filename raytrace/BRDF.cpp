@@ -35,7 +35,23 @@ float3 lookup_brdf_val(const float* brdf, const float3& n, const float3& normali
   // Transform vectors to tangent space and use the vectors_to_half_diff_coords function
   // to get input for the other version of the lookup_brdf_val function.
   // Hint: There is an onb function for creating an orthonormal basis and a Matrix3x3 data type useful for storing a change of basis matrix.
-  return make_float3(0.0f);
+	float3 b1 = make_float3(0);
+	float3 b2 = make_float3(0);
+	
+	onb(n, b1, b2);
+	
+	Matrix3x3 m = Matrix3x3();
+	m.setRow(0, b1);
+	m.setRow(1, b2);
+	m.setRow(2, n);
+
+	float3 i = m*normalized_wi;
+	float3 o = m * normalized_wo;
+
+	float theta_half, phi_half, theta_diff, phi_diff;
+	vectors_to_half_diff_coords(i, o, theta_half, phi_half, theta_diff, phi_diff);
+
+	return lookup_brdf_val(brdf, theta_half, phi_half, theta_diff, phi_diff);
 }
 
 float3 integrate_brdf(float* brdf, unsigned int N)
@@ -47,7 +63,11 @@ float3 integrate_brdf(float* brdf, unsigned int N)
   // Use N as the number of samples.
   // Hint: Use the functions sample_cosine_weighted and lookup_brdf_val.
 
-  return sum;
+  for (int i = 0; i < N; i++) {
+	  sum += lookup_brdf_val(brdf, n, normalize(sample_cosine_weighted(n)), normalize(sample_cosine_weighted(n)));
+  }
+  
+  return sum * M_PIf / N;
 }
 
 // Read BRDF data
