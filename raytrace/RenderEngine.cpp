@@ -58,10 +58,10 @@ RenderEngine::RenderEngine()
 	light_pow(optix::make_float3(M_PIf)),                    // Power of the default light
 	light_dir(optix::make_float3(-1.0f)),                    // Direction of the default light
 	default_light(&tracer, light_pow, light_dir),            // Construct default light
-	use_default_light(true),                                 // Choose whether to use the default light or not
+	use_default_light(false),                                 // Choose whether to use the default light or not
 	shadows_on(true),
 	background(optix::make_float3(0.1f, 0.3f, 0.6f)),        // Background color
-	bgtex_filename("../models/winter_evening_1k.hdr"),       // Background texture file name
+	bgtex_filename(""),// .. / models / winter_evening_1k.hdr"),       // Background texture file name
     current_shader(0),
     lambertian(scene.get_lights()),
     photon_caustics(&tracer, scene.get_lights(), 1.0f, 50),  // Max distance and number of photons to search for
@@ -122,9 +122,10 @@ void RenderEngine::load_files(int argc, char** argv)
   {
     // Insert default scene
     scene.add_plane(make_float3(0.0f, 0.0f, 0.0f), make_float3(0.0f, 1.0f, 0.0f), "../models/default_scene.mtl", 1, 0.2f); // last argument is texture scale
-    scene.add_sphere(make_float3(0.0f, 0.5f, 0.0f), 0.3f, "../models/default_scene.mtl", 2);
-    scene.add_triangle(make_float3(-0.2f, 0.1f, 0.9f), make_float3(0.2f, 0.1f, 0.9f), make_float3(-0.2f, 0.1f, -0.1f), "../models/default_scene.mtl", 3);
-    scene.add_light(new PointLight(&tracer, make_float3(M_PIf), make_float3(0.0f, 1.0f, 0.0f)));
+    //scene.add_sphere(make_float3(0.0f, 0.5f, 0.0f), 0.3f, "../models/default_scene.mtl", 2);
+    //scene.add_triangle(make_float3(-0.2f, 0.1f, 0.9f), make_float3(0.2f, 0.1f, 0.9f), make_float3(-0.2f, 0.1f, -0.1f), "../models/default_scene.mtl", 3);
+	scene.add_SDF(make_float3(0.0f, 0.5f, 0.0f), 0.3f, "../models/default_scene.mtl", 2);
+	scene.add_light(new PointLight(&tracer, make_float3(M_PIf), make_float3(0.0f, 1.0f, 0.0f)));
    
     init_view();
     float3 eye = make_float3(2.0f, 1.5f, 2.0f);

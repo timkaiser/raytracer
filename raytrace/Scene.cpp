@@ -16,6 +16,7 @@
 #include "Plane.h"
 #include "Sphere.h"
 #include "Triangle.h"
+#include "Geometry/SDF.h"
 #include "Light.h"
 #include "AreaLight.h"
 #include "HitInfo.h"
@@ -144,6 +145,19 @@ void Scene::add_triangle(const float3& v0, const float3& v1, const float3& v2, c
   triangles.push_back(triangle);
   objects.push_back(triangle);
   bbox.include(triangle->compute_bbox());
+}
+
+void Scene::add_SDF(const float3& center, float radius, const string& mtl_file, unsigned int idx)
+{
+	vector<ObjMaterial> m;
+	if (!mtl_file.empty())
+		mtl_load(mtl_file, m);
+	if (m.size() == 0)
+		m.push_back(ObjMaterial());
+	SDF* sdf = new SDF(center, radius, idx < m.size() ? m[idx] : m.back());
+	//SDFs.push_back(sdf);
+	objects.push_back(sdf);
+	bbox.include(sdf->compute_bbox());
 }
 
 unsigned int Scene::extract_area_lights(RayTracer *tracer, unsigned int samples_per_light)

@@ -20,6 +20,7 @@ using namespace optix;
 
 void ParticleTracer::build_maps(int no_of_caustic_particles, unsigned int max_no_of_shots)
 {
+	return;
   // Retrieve light sources
   const vector<Light*>& lights = scene->get_lights();
   if(lights.size() == 0)

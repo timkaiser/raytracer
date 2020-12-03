@@ -99,6 +99,7 @@
     <ClInclude Include="cdf_bsearch.h" />
     <ClInclude Include="Distribution1D.h" />
     <ClInclude Include="Distribution2D.h" />
+    <ClInclude Include="Geometry\SDF.h" />
     <ClInclude Include="GLViewController.h" />
     <ClInclude Include="Holdout.h" />
     <ClInclude Include="luminance.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Distribution1D.cpp" />
     <ClCompile Include="Distribution2D.cpp" />
+    <ClCompile Include="Geometry\SDF.cpp" />
     <ClCompile Include="GLViewController.cpp" />
     <ClCompile Include="Holdout.cpp" />
     <ClCompile Include="MCGlossy.cpp" />

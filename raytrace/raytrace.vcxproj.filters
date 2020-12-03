@@ -241,6 +241,9 @@
     <ClInclude Include="PanoramicLight.h">
       <Filter>Lights</Filter>
     </ClInclude>
+    <ClInclude Include="Geometry\SDF.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -375,6 +378,9 @@
     </ClCompile>
     <ClCompile Include="PanoramicLight.cpp">
       <Filter>Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\SDF.cpp">
+      <Filter>Geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

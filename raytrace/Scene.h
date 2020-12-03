@@ -15,6 +15,7 @@
 #include "Plane.h"
 #include "Sphere.h"
 #include "Triangle.h"
+#include "Geometry/SDF.h"
 #include "Camera.h"
 #include "Shader.h"
 #include "HitInfo.h"
@@ -48,6 +49,7 @@ public:
   void add_plane(const optix::float3& position, const optix::float3& normal, const std::string& mtl_file, unsigned int idx = 0, float tex_scale = 1.0f);
   void add_sphere(const optix::float3& center, float radius, const std::string& mtl_file, unsigned int idx = 0);
   void add_triangle(const optix::float3& v0, const optix::float3& v1, const optix::float3& v2, const std::string& mtl_file, unsigned int idx = 0);
+  void add_SDF(const optix::float3& center, float radius, const std::string& mtl_file, unsigned int idx = 0);
 
   // Light handling
   void add_light(Light* light) { if(light) lights.push_back(light); }
@@ -83,6 +85,7 @@ private:
   std::vector<const Plane*> planes;
   std::vector<const Sphere*> spheres;
   std::vector<const Triangle*> triangles;
+  //std::vector<const SDF*> SDFs;
   std::vector<Object3D*> objects;
   std::vector<optix::Matrix4x4> transforms;
   BspTree acc;
