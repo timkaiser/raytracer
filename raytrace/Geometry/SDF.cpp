@@ -5,12 +5,19 @@
 #include <optix_world.h>
 #include "../HitInfo.h"
 #include "SDF.h"
+#include <iostream>
+#include "../Geometry/SDFObjects/SDFObject.h"
 
 using namespace optix;
 
+bool debug = true;
 
 bool SDF::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 {
+
+	if (debug) {
+		SDF
+	}
 
 
 	float threshold = 0.1;
@@ -19,16 +26,19 @@ bool SDF::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 	float3 dir = normalize(r.direction);
 	float3 pos = r.origin;
 
-	float3 center2 = make_float3(0, 0.5, 0);
+	/*float dist = outsideDistToField(pos);
+	if (dist < 0) {
+		pos = pos + dir * dist;
+	}*/
 
-	float dist = min(distSphere(pos, center, radius), distSphere(pos, center2, radius));
+	float dist = distance(pos);
 	float distTraveled = 0;
 	
-
+	
 	while (distTraveled < maxDist && dist > threshold) {
 		pos = pos + dir * dist;
 		distTraveled += dist;
-		dist = min(distSphere(pos, center, radius), distSphere(pos, center2, radius));
+		dist = distance(pos);
 	}
 
 	if (dist > threshold) { 
@@ -74,6 +84,108 @@ Aabb SDF::compute_bbox() const
 	return bbox;
 }
 
-float SDF::distSphere(const float3& pos, const float3 spherePos, const float radius) const{
-	return abs(length(pos - spherePos) - radius);
+float SDF::distSphere(const float3& pos, const float3 spherePos, const float radius) const {
+	return length(pos - spherePos) - radius;
 }
+
+float smoothMin(float a, float b, float k) {
+	float h = max(k - abs(a - b), 0) / k;
+	return min(a, b) - h * h * h * k / 6.0f;
+}
+
+float SDF::distance(const float3& pos) const {
+	//float3 center2 = make_float3(0, 0, 0.5f);
+	return distSphere(pos, center, radius);// fmax(distSphere(pos, center, radius), distSphere(pos, center2, radius));
+}
+
+
+int arr_width, arr_length, arr_height;
+int arrayCoords(int x, int y, int z) {
+	return x * arr_width + y * arr_length + z;
+}
+
+float arr_resolution;
+float* field;
+
+void SDF::buildSDF(const int w, const int l, const int h, float r) const {
+	arr_width = w;
+	arr_length = l;
+	arr_height = h;
+
+	field = new float[w*l*h];
+	for (int i = 0; i < arr_width; i++) {
+		for (int j = 0; j < arr_length; j++) {
+			for (int k = 0; k < arr_height; k++) {
+				float3 pos = make_float3((i-w/2.0) * r, (j - l / 2.0) * r, (k - h / 2.0) * r);
+				field[arrayCoords(i, j, k)] = distance(pos);
+			}
+		}
+	}
+
+
+	for (int i = 0; i < arr_width; i+=2) {
+		for (int j = 0; j < arr_length; j += 2) {
+			for (int k = 0; k < arr_height; k += 2) {
+				std::cout << field[arrayCoords(i, j, k)] << " ";
+			}
+			std::cout << "\n";
+		}
+		std::cout << "\n\n";
+	}
+}
+
+
+float SDF::outsideDistToField(const float3& rayPos) const {
+	float3 q = make_float3(
+		abs(rayPos.x) - center.x - (arr_width - 1) * arr_resolution * 0.5,
+		abs(rayPos.y) - center.y - (arr_length - 1) * arr_resolution * 0.5,
+		abs(rayPos.z) - center.z - (arr_height - 1) * arr_resolution * 0.5
+		);
+	return length(fmaxf(q, make_float3(0.0))) + min(max(q.x, max(q.y, q.z)), 0.0);
+}
+
+float SDF::retrieveDistance(const float3& rayPos) const {
+	float distOutside = outsideDistToField(rayPos);
+	if (distOutside < 0) {
+		return distOutside;
+	}
+
+	float3 pos = rayPos - center +make_float3(arr_width - 1, arr_length - 1, arr_height - 1) * 0.5f;
+	if (pos.x < 0 || pos.y < 0 || pos.z < 0 || pos.x > arr_width - 1 || pos.y > arr_length - 1 || pos.z >arr_height - 1) {
+		float3 result;
+		result.x = pos.x < 0 ? -pos.x : pos.x > arr_width - 1 ? (arr_width - 1) - pos.x : 0;
+		result.y = pos.y < 0 ? -pos.y : pos.y > arr_length - 1 ? (arr_length - 1) - pos.y : 0;
+		result.z = pos.z < 0 ? -pos.z : pos.z > arr_height - 1 ? (arr_height - 1) - pos.z : 0;
+
+		return length(result);
+	}
+
+	int idx = (int)pos.x;
+	int idy = (int)pos.y;
+	int idz = (int)pos.z;
+
+	float px = pos.x - idx;
+	float py = pos.y - idy;
+	float pz = pos.z - idz;
+
+	float d1 = field[arrayCoords(idx, idy, idz)];
+	float d2 = field[arrayCoords(idx, idy, idz + 1)];
+	float d3 = field[arrayCoords(idx, idy + 1, idz)];
+	float d4 = field[arrayCoords(idx, idy + 1, idz + 1)];
+	float d5 = field[arrayCoords(idx + 1, idy, idz)];
+	float d6 = field[arrayCoords(idx + 1, idy, idz + 1)];
+	float d7 = field[arrayCoords(idx + 1, idy + 1, idz)];
+	float d8 = field[arrayCoords(idx + 1, idy + 1, idz + 1)];
+
+	return d1 * (1 - px) * (1 - py) * (1 - pz)
+		+ d2 * (1 - px) * (1 - py) * (pz)
+		+ d3 * (1 - px) * (py) * (1 - pz)
+		+ d4 * (1 - px) * (py) * (pz)
+		+ d5 * (px) * (1 - py) * (1 - pz)
+		+ d6 * (px) * (1 - py) * (pz)
+		+ d7 * (px) * (py) * (1 - pz)
+		+ d8 * (px) * (py) * (pz);
+}
+
+
+

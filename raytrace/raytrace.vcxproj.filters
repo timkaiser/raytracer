@@ -44,6 +44,9 @@
     <Filter Include="View">
       <UniqueIdentifier>{6f9d131b-0fab-47ec-b69c-87f54b69f1ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Geometry\SDFObjects">
+      <UniqueIdentifier>{ee65cec1-9378-4a31-b4a8-d3ac8b9f0b32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -244,6 +247,15 @@
     <ClInclude Include="Geometry\SDF.h">
       <Filter>Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="SDFObject.h">
+      <Filter>Geometry\SDFObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="SDFCSGTree.h">
+      <Filter>Geometry\SDFObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Blending.h">
+      <Filter>Geometry\SDFObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -381,6 +393,9 @@
     </ClCompile>
     <ClCompile Include="Geometry\SDF.cpp">
       <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="SDFCSGTree.cpp">
+      <Filter>Geometry\SDFObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -16,7 +16,9 @@ class SDF : public Object3D
 public:
 	SDF(const optix::float3& sphere_center, float sphere_radius, const ObjMaterial& obj_material)
 		: center(sphere_center), radius(sphere_radius), material(obj_material)
-	{ }
+	{ 
+		buildSDF(20, 20, 20, 0.1);
+	}
 
 	virtual bool intersect(const optix::Ray& ray, HitInfo& hit, unsigned int prim_idx) const;
 	virtual void transform(const optix::Matrix4x4& m);
@@ -24,14 +26,19 @@ public:
 
 	const ObjMaterial& get_material() const { return material; }
 
+	virtual float distance(const optix::float3& rayPos) const;
 	virtual float distSphere(const optix::float3& rayPos, const optix::float3 shperePos, const float radius) const;
+	
+	virtual void buildSDF(int w, int l, int h, float resolution) const;
+	virtual float retrieveDistance(const optix::float3& rayPos) const;
+	virtual float outsideDistToField(const optix::float3& rayPos) const;
 
 
 private:
 	optix::float3 center;
 	float radius;
 	ObjMaterial material;
-
+	std::vector<Object3D*> objects;
 };
 
 #endif // SDF_H

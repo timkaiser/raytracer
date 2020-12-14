@@ -94,6 +94,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Blending.h" />
     <ClInclude Include="BRDF.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="cdf_bsearch.h" />
@@ -101,6 +102,8 @@
     <ClInclude Include="Distribution2D.h" />
     <ClInclude Include="Geometry\SDF.h" />
     <ClInclude Include="GLViewController.h" />
+    <ClInclude Include="SDFCSGTree.h" />
+    <ClInclude Include="SDFObject.h" />
     <ClInclude Include="Holdout.h" />
     <ClInclude Include="luminance.h" />
     <ClInclude Include="MCGlossy.h" />
@@ -186,6 +189,7 @@
     <ClCompile Include="Mirror.cpp" />
     <ClCompile Include="Phong.cpp" />
     <ClCompile Include="PhotonCaustics.cpp" />
+    <ClCompile Include="SDFCSGTree.cpp" />
     <ClCompile Include="Textured.cpp" />
     <ClCompile Include="Transparent.cpp" />
     <ClCompile Include="Volume.cpp" />
