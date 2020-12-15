@@ -6,7 +6,9 @@
 #include "../HitInfo.h"
 #include "SDF.h"
 #include <iostream>
-#include "../Geometry/SDFObjects/SDFObject.h"
+#include "../SDFObject.h"
+//#include "../SDFCSGTree.h"
+#include "../SDFSphere.h"
 
 using namespace optix;
 
@@ -15,9 +17,9 @@ bool debug = true;
 bool SDF::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 {
 
-	if (debug) {
+	/*if (debug) {
 		SDF
-	}
+	}*/
 
 
 	float threshold = 0.1;
@@ -94,8 +96,7 @@ float smoothMin(float a, float b, float k) {
 }
 
 float SDF::distance(const float3& pos) const {
-	//float3 center2 = make_float3(0, 0, 0.5f);
-	return distSphere(pos, center, radius);// fmax(distSphere(pos, center, radius), distSphere(pos, center2, radius));
+	return root.distance(pos);
 }
 
 
@@ -107,8 +108,11 @@ int arrayCoords(int x, int y, int z) {
 float arr_resolution;
 float* field;
 
-void SDF::buildSDF(const int w, const int l, const int h, float r) const {
-	arr_width = w;
+void SDF::buildSDF(const int w, const int l, const int h, float r){
+	root = SDFSphere(make_float3(0, 0, 0), 1);
+
+
+	/*arr_width = w;
 	arr_length = l;
 	arr_height = h;
 
@@ -131,7 +135,7 @@ void SDF::buildSDF(const int w, const int l, const int h, float r) const {
 			std::cout << "\n";
 		}
 		std::cout << "\n\n";
-	}
+	}*/
 }
 
 

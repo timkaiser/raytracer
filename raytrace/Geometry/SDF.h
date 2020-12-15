@@ -10,6 +10,7 @@
 #include "../HitInfo.h"
 #include "../ObjMaterial.h"
 #include "../Object3D.h"
+#include"../SDFObject.h"
 
 class SDF : public Object3D
 {
@@ -29,7 +30,7 @@ public:
 	virtual float distance(const optix::float3& rayPos) const;
 	virtual float distSphere(const optix::float3& rayPos, const optix::float3 shperePos, const float radius) const;
 	
-	virtual void buildSDF(int w, int l, int h, float resolution) const;
+	virtual void buildSDF(int w, int l, int h, float resolution);
 	virtual float retrieveDistance(const optix::float3& rayPos) const;
 	virtual float outsideDistToField(const optix::float3& rayPos) const;
 
@@ -38,7 +39,9 @@ private:
 	optix::float3 center;
 	float radius;
 	ObjMaterial material;
-	std::vector<Object3D*> objects;
+	std::vector<SDFObject*> sdfObjects;
+	SDFObject root;
+
 };
 
 #endif // SDF_H

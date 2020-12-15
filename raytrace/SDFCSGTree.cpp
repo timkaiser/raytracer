@@ -5,6 +5,6 @@
 
 using namespace optix;
 
-float SDFCSGTree::distance(float3 pos) const{
-	return 0.0f;
+float SDFCSGTree::distance(float3& pos) const{
+	return length(pos) - 1;
 }

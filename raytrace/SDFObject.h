@@ -1,5 +1,3 @@
-#pragma once
-
 
 #ifndef SDFOBJECT_H
 #define SDFOBJECT_H

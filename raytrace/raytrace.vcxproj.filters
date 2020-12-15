@@ -247,15 +247,14 @@
     <ClInclude Include="Geometry\SDF.h">
       <Filter>Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="SDFObject.h">
+    <ClInclude Include="Blending.h">
       <Filter>Geometry\SDFObjects</Filter>
     </ClInclude>
     <ClInclude Include="SDFCSGTree.h">
       <Filter>Geometry\SDFObjects</Filter>
     </ClInclude>
-    <ClInclude Include="Blending.h">
-      <Filter>Geometry\SDFObjects</Filter>
-    </ClInclude>
+    <ClInclude Include="SDFObject.h" />
+    <ClInclude Include="SDFSphere.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -396,6 +395,9 @@
     </ClCompile>
     <ClCompile Include="SDFCSGTree.cpp">
       <Filter>Geometry\SDFObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="SDFSphere.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

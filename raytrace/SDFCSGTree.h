@@ -21,7 +21,7 @@ public:
 	//virtual void transform(const optix::Matrix4x4& m);
 	//virtual optix::Aabb compute_bbox() const;
 
-	float distance(float3 pos) const;
+	float distance(optix::float3& pos) const;
 
 
 private:

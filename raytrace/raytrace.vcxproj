@@ -102,8 +102,8 @@
     <ClInclude Include="Distribution2D.h" />
     <ClInclude Include="Geometry\SDF.h" />
     <ClInclude Include="GLViewController.h" />
+    <ClInclude Include="SDFSphere.h" />
     <ClInclude Include="SDFCSGTree.h" />
-    <ClInclude Include="SDFObject.h" />
     <ClInclude Include="Holdout.h" />
     <ClInclude Include="luminance.h" />
     <ClInclude Include="MCGlossy.h" />
@@ -121,6 +121,7 @@
     <ClInclude Include="ParticleTracer.h" />
     <ClInclude Include="RayCaster.h" />
     <ClInclude Include="RayTracer.h" />
+    <ClInclude Include="SDFObject.h" />
     <ClInclude Include="Tracer.h" />
     <ClInclude Include="Emission.h" />
     <ClInclude Include="Glossy.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="Phong.cpp" />
     <ClCompile Include="PhotonCaustics.cpp" />
     <ClCompile Include="SDFCSGTree.cpp" />
+    <ClCompile Include="SDFSphere.cpp" />
     <ClCompile Include="Textured.cpp" />
     <ClCompile Include="Transparent.cpp" />
     <ClCompile Include="Volume.cpp" />
