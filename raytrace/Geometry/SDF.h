@@ -11,6 +11,7 @@
 #include "../ObjMaterial.h"
 #include "../Object3D.h"
 #include"../SDFObject.h"
+//#include"../SDFSphere.h"
 
 class SDF : public Object3D
 {

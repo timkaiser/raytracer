@@ -4,6 +4,6 @@
 
 using namespace optix;
 
-float SDFSphere::distance(float3& pos) const {
+float SDFSphere::distance(const float3& pos) const {
 	return length(pos - center) - radius;
 }

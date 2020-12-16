@@ -15,7 +15,7 @@ public:
 		: center(cent), radius(rad)
 	{}
 
-	float distance(optix::float3& pos) const;
+	float distance(const optix::float3& pos) const override;
 
 
 private:

@@ -191,6 +191,7 @@
     <ClCompile Include="Phong.cpp" />
     <ClCompile Include="PhotonCaustics.cpp" />
     <ClCompile Include="SDFCSGTree.cpp" />
+    <ClCompile Include="SDFObject.cpp" />
     <ClCompile Include="SDFSphere.cpp" />
     <ClCompile Include="Textured.cpp" />
     <ClCompile Include="Transparent.cpp" />

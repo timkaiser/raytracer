@@ -399,6 +399,9 @@
     <ClCompile Include="SDFSphere.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="SDFObject.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
