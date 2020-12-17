@@ -35,7 +35,7 @@ bool PointLight::sample(const float3& pos, float3& dir, float3& L) const
 	dir = normalize(dir);
 
 	//shadows
-	if (shadows) {
+	if (shadows && false) {
 		Ray shadowray = Ray(pos, dir, 0, 0.0001f , dist);
 		HitInfo hit;
 		tracer->trace_to_any(shadowray, hit);

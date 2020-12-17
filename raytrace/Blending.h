@@ -5,34 +5,15 @@
 
 #include <optix_world.h>
 
-enum Blendfunction { MIN, MAX, SMOOTHMIN};
+enum Blendfunction {UNION, INTERSECTION, SUBTRACTION};
 
-float minb(float a, float b) {
-	return fminf(a,b);
-}
+float smoothUnion(float a, float b, float k);
 
-float maxb(float a, float b) {
-	return fmaxf(a, b);
-}
+float smoothIntersection(float a, float b, float k);
 
-float smoothMinb(float a, float b, float k) {
-	float h = fmaxf(k - abs(a - b), 0) / k;
-	return fminf(a, b) - h * h * h * k / 6.0f;
-}
+float smoothSubtraction(float a, float b);
 
-float blend(Blendfunction func, float a, float b, float blendparameter = 0.0f) {
-	switch (func) {
-	case MIN:
-		return minb(a, b);
-		break;
-	case MAX:
-		return maxb(a, b);
-		break;
-	case SMOOTHMIN:
-		return smoothMinb(a, b, blendparameter);
-		break;
-	}
-}
+float blend(Blendfunction func, float a, float b, float blendparameter = 0.0f);
 
 
 #endif // BLENDING_H

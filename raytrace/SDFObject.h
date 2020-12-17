@@ -9,11 +9,7 @@
 class SDFObject
 {
 public:
-
-	//virtual bool intersect(const optix::Ray& ray, HitInfo& hit, unsigned int prim_idx) const;
-	//virtual void transform(const optix::Matrix4x4& m);
-	//virtual optix::Aabb compute_bbox() const;
-
+	virtual void transform(const optix::Matrix4x4& m);
 	virtual float distance(const optix::float3& rayPos) const;
 
 

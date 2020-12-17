@@ -29,11 +29,9 @@ public:
 	const ObjMaterial& get_material() const { return material; }
 
 	virtual float distance(const optix::float3& rayPos) const;
-	virtual float distSphere(const optix::float3& rayPos, const optix::float3 shperePos, const float radius) const;
+	virtual optix::float3 calcNormal(const optix::float3& rayPos) const;
 	
 	virtual void buildSDF(int w, int l, int h, float resolution);
-	virtual float retrieveDistance(const optix::float3& rayPos) const;
-	virtual float outsideDistToField(const optix::float3& rayPos) const;
 
 
 private:
@@ -41,7 +39,7 @@ private:
 	float radius;
 	ObjMaterial material;
 	std::vector<SDFObject*> sdfObjects;
-	SDFObject root;
+	SDFObject* root;
 
 };
 

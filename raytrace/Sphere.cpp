@@ -73,6 +73,8 @@ bool Sphere::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 
 void Sphere::transform(const Matrix4x4& m)
 {
+
+  std::cout << "transform Shpere" << std::endl;
   float3 radius_vec = make_float3(radius, 0.0f, 0.0f) + center;
   radius_vec = make_float3(m*make_float4(radius_vec, 1.0f));
   center = make_float3(m*make_float4(center, 1.0f)); 
