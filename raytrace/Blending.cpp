@@ -1,7 +1,7 @@
 #include "Blending.h"
 
 float smoothUnion(float a, float b, float k) {
-	if (k == 0) {
+	if (k == 0.0f) {
 		return fminf(a, b);
 	}
 	float h = fmaxf(k - abs(a - b), 0.0);

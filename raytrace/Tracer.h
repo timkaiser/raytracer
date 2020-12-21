@@ -21,7 +21,7 @@ public:
   const Shader* get_shader(const HitInfo& hit) const { return scene ? scene->get_shader(hit) : 0; }
   void get_bsphere(optix::float3& center, float& radius) { if(scene) scene->get_bsphere(center, radius); }
 
-  virtual optix::float3 compute_pixel(unsigned int x, unsigned int y) const = 0;
+  virtual optix::float3 compute_pixel(unsigned int x, unsigned int y, int rendermode = 0) const = 0;
 
 protected:
   // Resolution

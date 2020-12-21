@@ -1,6 +1,6 @@
 newmtl green
-Ka 0.01 0.07 0.00
-Kd 0.09 0.63 0.00
+Ka 0.01 0.00 0.00
+Kd 0.909 0.963 0.900
 Ks 0.00 0.00 0.00	
 illum 1
 map_Kd grass.jpg

@@ -58,6 +58,7 @@ public:
   void readjust_camera();
   void render();
   void pathtrace();
+  //bool switchSDFVisualization();
 
   // Export/import
   void save_view(const std::string& filename) const;

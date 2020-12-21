@@ -17,7 +17,7 @@ public:
 
 	void transform(const optix::Matrix4x4& m);
 	float distance(const optix::float3& pos) const;
-	
+	void add_to_bbox(optix::Aabb& bb) const;
 
 
 private:

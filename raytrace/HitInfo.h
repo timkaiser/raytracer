@@ -12,16 +12,18 @@ class TriMesh;
 
 struct HitInfo
 {
-  HitInfo() 
-    : has_hit(false),
-      dist(RT_DEFAULT_MAX),
-      trace_depth(0),
-      material(0),
-      ray_ior(1.0f)
+    HitInfo()
+        : has_hit(false),
+        dist(RT_DEFAULT_MAX),
+        trace_depth(0),
+        material(0),
+        ray_ior(1.0f),
+        closest_dist(0.0f)
   { }
 
   bool has_hit;
   float dist;
+  float closest_dist;
   optix::float3 position;
   optix::float3 shading_normal;
   optix::float3 geometric_normal;

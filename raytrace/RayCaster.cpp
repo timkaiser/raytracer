@@ -12,7 +12,10 @@
 using namespace std;
 using namespace optix;
 
-float3 RayCaster::compute_pixel(unsigned int x, unsigned int y) const
+bool visualizeSDF = true;
+
+//rendermode: 0=shading, 1=normals, 2=sdf distance 
+float3 RayCaster::compute_pixel(unsigned int x, unsigned int y, int rendermode) const
 {
     float2 ip_coords = make_float2(x, y) * win_to_ip + lower_left;
 
@@ -24,10 +27,27 @@ float3 RayCaster::compute_pixel(unsigned int x, unsigned int y) const
 		Ray ray = cam->get_ray(ip_coords+jit);
 		scene->closest_hit(ray, hitInfo);
 		if (hitInfo.has_hit) {
-            result += get_shader(hitInfo)->shade(ray, hitInfo);
+            switch(rendermode){
+            case 0: //shading mode
+                result += get_shader(hitInfo)->shade(ray, hitInfo);
+                break;
+            case 1: //normals rednering mode
+                result += hitInfo.shading_normal;
+                break;
+            case 2: //sdf visualization mode
+                result += make_float3(0.01, 0.1, 1) * 10000 * abs(hitInfo.closest_dist);
+                break;
+            }
 		}
 		else {
-            result += get_background();
+            if (rendermode == 2) { //sdf visualization mode
+                float factor = 10;
+                float f = hitInfo.closest_dist * factor;
+                result += make_float3(1) * (f - (int) f);
+            }
+            else { //shading/normals mode
+                result += get_background();
+            }
 		}
 	}
 

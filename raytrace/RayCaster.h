@@ -19,7 +19,7 @@ public:
     compute_jitters();
   }
   
-  virtual optix::float3 compute_pixel(unsigned int x, unsigned int y) const;
+  virtual optix::float3 compute_pixel(unsigned int x, unsigned int y, int rendermode) const;
 
   void set_background(const optix::float3& color) { background = color; }
   void set_background(SphereTexture* sphere_texture) { sphere_tex = sphere_texture; }

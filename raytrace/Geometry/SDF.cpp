@@ -13,31 +13,38 @@
 
 using namespace optix;
 
-bool debug = true;
-
+//calculates ray object intersections
 bool SDF::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 {
-	float threshold = 0.0001;
-	float maxDist = 50;
+	float threshold = 0.00001;		//How close we have to get to the surface until it counts as a hit
+	float maxDist = 50;				//After what distance we give up looking for surfaces
 	
-	float3 dir = normalize(r.direction);
-	float3 pos = r.origin;
+	float3 dir = normalize(r.direction);	//normalizing the direction is important 
+	float3 pos = r.origin + dir * r.tmin;	//making sure that we take the minimum distance into account. important for reflecting
 
 
-	float dist = distance(pos);
-	float distTraveled = 0;
+	float dist = abs(distance(pos));		//abs(), because we could be inside the object
+	float distTraveled = 0;					//to measure the distance to the object
 	
+	hit.closest_dist = dist;				//only needed for sdf visualization
 	
+	//Ray Marching
 	while (distTraveled < maxDist && dist > threshold) {
 		pos = pos + dir * dist;
 		distTraveled += dist;
-		dist = distance(pos);
+		dist = abs(distance(pos));
+		hit.closest_dist = fminf(hit.closest_dist, dist);
 	}
 
+	//no hit
 	if (dist > threshold) { 
 		return false; 
 	}
 	
+	pos = pos + dir * dist; //trying to minimize the error. It worked. Kind of.
+
+	//register hit
+	hit.closest_dist = abs(distance(pos));
 	hit.has_hit = true;
 	hit.position = pos;
 	float3 normal = calcNormal(pos);
@@ -45,12 +52,7 @@ bool SDF::intersect(const Ray& r, HitInfo& hit, unsigned int prim_idx) const
 	hit.geometric_normal = normal;
 	hit.shading_normal = normal;
 	hit.material = &material;
-	//InvSphereMap map = InvSphereMap();
-	//float u, v;
-	//map.project_direction(normal, u, v);
-	if (material.has_texture) {
-		hit.texcoord = make_float3(hit.shading_normal.x, hit.shading_normal.y, hit.shading_normal.z);
-	}
+
 	return true;
 }
 
@@ -62,45 +64,40 @@ void SDF::transform(const Matrix4x4& m)
 
 Aabb SDF::compute_bbox() const
 {
-	Aabb bbox;
-	bbox.include(center - make_float3(radius, 0.0f, 0.0f));
-	bbox.include(center + make_float3(radius, 0.0f, 0.0f));
-	bbox.include(center - make_float3(0.0f, radius, 0.0f));
-	bbox.include(center + make_float3(0.0f, radius, 0.0f));
-	bbox.include(center - make_float3(0.0f, 0.0f, radius));
-	bbox.include(center + make_float3(0.0f, 0.0f, radius));
+	Aabb bbox; 
+	for each (SDFObject * obj in sdfObjects) {
+		obj->add_to_bbox(bbox);
+	}
 	return bbox;
 }
 
+//This methode returns the derivative of the distance function, and therefor the normal, at point pos
 float3 SDF::calcNormal(const float3& pos) const {
-	const float h = 1e-4;
-	float dist = distance(pos);
+	const float h = 1e-4; //epsilon
+	float dist = distance(pos);     //f(x,y,z) = distance(float3 position)
 	float3 normal = make_float3(
-			distance(make_float3(pos.x + h, pos.y, pos.z)) - dist,
-			distance(make_float3(pos.x, pos.y + h, pos.z)) - dist,
-			distance(make_float3(pos.x, pos.y, pos.z + h)) - dist
+		distance(make_float3(pos.x + h, pos.y, pos.z)) - dist,
+		distance(make_float3(pos.x, pos.y + h, pos.z)) - dist,
+		distance(make_float3(pos.x, pos.y, pos.z + h)) - dist
 		);
-	return normalize(normal);
+
+	//not sure if necessary, but want to be sure that the normal is in the right direction
+	if (distance(pos + normal) < dist) {
+		return  -normalize(normal);
+	}
+	else {
+		return  normalize(normal);
+	}
 }
 
-
+//This methode retuns the signed distance to any surface in the scene at position pos 
 float SDF::distance(const float3& pos) const {
-	return abs(root->distance(pos));
-}
-
-
-void SDF::buildSDF(const int w, const int l, const int h, float r){
-	//root = new SDFSphere(make_float3(-0.5f, 0, 0),0.5f);
-	SDFObject* a1 = new SDFBox(make_float3(0, 0, 0), 0.5f, 0.5f, 0.5f);
-	SDFObject* a2 = new SDFSphere(make_float3(0.0f, 0, 0.0f), 0.9f);
-	SDFObject* a = new SDFCSGTree(a1, a2, Blendfunction::INTERSECTION, 0.1f);
-	SDFObject* b = new SDFSphere(make_float3(0.0f, 0, 0.0f), 0.5f);
-
-
-	root = new SDFCSGTree(a, b, Blendfunction::SUBTRACTION, 0.1f);
-
-	//root = new SDFBox(make_float3(-0.5f, 0, 0), make_float3(1));
-
+	float dist = 100000;
+	for each (SDFObject* obj in sdfObjects)	{
+		float distObj = obj->distance(pos);
+		dist = abs(distObj) < abs(dist) ? distObj : dist;
+	}
+	return dist;
 }
 
 

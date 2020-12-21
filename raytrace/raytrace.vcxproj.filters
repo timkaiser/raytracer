@@ -260,6 +260,8 @@
       <Filter>Geometry\SDFObjects</Filter>
     </ClInclude>
     <ClInclude Include="SDFBox.h" />
+    <ClInclude Include="SDFCylinder.h" />
+    <ClInclude Include="SDFTorus.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -411,6 +413,12 @@
       <Filter>Geometry\SDFObjects</Filter>
     </ClCompile>
     <ClCompile Include="SDFBox.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SDFCylinder.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SDFTorus.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>

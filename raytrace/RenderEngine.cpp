@@ -17,6 +17,12 @@
 #include "PanoramicLight.h"
 #include "RenderEngine.h"
 
+#include "SDFObject.h"
+#include "SDFCSGTree.h"
+#include "SDFSphere.h"
+#include "SDFBox.h"
+#include "SDFCylinder.h"
+
 #ifdef _OPENMP
   #include <omp.h>
 #endif
@@ -40,6 +46,7 @@ namespace
 //////////////////////////////////////////////////////////////////////
 // Initialization
 //////////////////////////////////////////////////////////////////////
+int rendermode = 0;
 
 RenderEngine::RenderEngine()
 	: win(optix::make_uint2(768, 512)),                        // Default window size
@@ -59,7 +66,7 @@ RenderEngine::RenderEngine()
 	light_dir(optix::make_float3(-1.0f)),                    // Direction of the default light
 	default_light(&tracer, light_pow, light_dir),            // Construct default light
 	use_default_light(false),                                 // Choose whether to use the default light or not
-	shadows_on(false),
+	shadows_on(true),
 	background(optix::make_float3(0.1f, 0.3f, 0.6f)),        // Background color
 	bgtex_filename(""),// .. / models / winter_evening_1k.hdr"),       // Background texture file name
     current_shader(0),
@@ -106,27 +113,97 @@ void RenderEngine::load_files(int argc, char** argv)
       Matrix4x4 transform = Matrix4x4::identity();
 
       // Special rules for some meshes
-      if(char_traits<char>::compare(filename.c_str(), "cornell", 7) == 0)
-        transform = Matrix4x4::scale(make_float3(0.025f))*Matrix4x4::rotate(M_PIf, make_float3(0.0f, 1.0f, 0.0f));
-      else if(char_traits<char>::compare(filename.c_str(), "bunny", 5) == 0)
+      if (char_traits<char>::compare(filename.c_str(), "cornell", 7) == 0) {
+          transform = Matrix4x4::scale(make_float3(0.025f)) * Matrix4x4::rotate(M_PIf, make_float3(0.0f, 1.0f, 0.0f));
+
+          std::vector<SDFObject*> sdfObjects;
+          float3 cent = make_float3(-7, 4, -7);
+          SDFObject* a1 = new SDFBox(cent, 3, 3, 3);
+          SDFObject* a2 = new SDFSphere(cent, 4.5f);
+          SDFObject* a = new SDFCSGTree(a1, a2, Blendfunction::INTERSECTION, 0.1f);
+          SDFObject* b = new SDFSphere(cent, 3.5f);
+          sdfObjects.push_back(new SDFCSGTree(a, b, Blendfunction::SUBTRACTION, 0.1f));
+          scene.add_SDF(sdfObjects, "../models/sdf.mtl", 1);
+      }
+      else if (char_traits<char>::compare(filename.c_str(), "bunny", 5) == 0)
         transform = Matrix4x4::translate(make_float3(-3.0f, -0.85f, -8.0f))*Matrix4x4::scale(make_float3(25.0f));
       else if(char_traits<char>::compare(filename.c_str(), "justelephant", 12) == 0)
         transform = Matrix4x4::translate(make_float3(-10.0f, 3.0f, -2.0f))*Matrix4x4::rotate(0.5f, make_float3(0.0f, 1.0f, 0.0f));
      
       // Load the file into the scene
-      scene.load_mesh(argv[i], transform);    
+      scene.load_mesh(argv[i], transform);   
+
     }
     init_view();
   }
   else
   {
-    // Insert default scene
-    //scene.add_plane(make_float3(0.0f, 0.0f, 0.0f), make_float3(0.0f, 1.0f, 0.0f), "../models/default_scene.mtl", 1, 0.2f); // last argument is texture scale
-    //scene.add_sphere(make_float3(1.0f, 0.5f, 0.0f), 0.3f, "../models/default_scene.mtl", 1);
-    //scene.add_triangle(make_float3(-0.2f, 0.1f, 0.9f), make_float3(0.2f, 0.1f, 0.9f), make_float3(-0.2f, 0.1f, -0.1f), "../models/default_scene.mtl", 3);
-	scene.add_SDF(make_float3(0.0f, 0.0f, 0.0f), 0.3f, "../models/default_scene.mtl", 2);
-	scene.add_light(new PointLight(&tracer, make_float3(M_PIf), make_float3(0.0f, 2.0f, 0.0f)));
-   
+      // Insert default scene
+
+      //plane color has been changed to white
+      //scene.add_plane(make_float3(0.0f, -2.0f, 0.0f), make_float3(0.0f, 1.0f, 0.0f), "../models/default_scene.mtl", 1, 0.2f); // last argument is texture scale
+      
+      //scene.add_sphere(make_float3(1.0f, 0.5f, 0.0f), 0.3f, "../models/sdf.mtl", 1);
+      //scene.add_triangle(make_float3(-0.2f, 0.1f, 0.9f), make_float3(0.2f, 0.1f, 0.9f), make_float3(-0.2f, 0.1f, -0.1f), "../models/default_scene.mtl", 3);
+      //scene.add_light(new PointLight(&tracer, make_float3(M_PIf), make_float3(0.0f, 2.0f, 0.0f)));
+      scene.add_light(new Directional(&tracer, make_float3(M_PIf), normalize(make_float3(0.80f, -1.0f, 0.0f))));
+
+      std::vector<SDFObject*> sdfObjects;
+
+      //sdfObjects.push_back(new SDFBox(make_float3(0), 0.5f, 0.5f, 0.5f));
+      //sdfObjects.push_back(new SDFSphere(make_float3(0), 0.7f));;
+      //sdfObjects.push_back(new SDFCylinder(make_float3(0), make_float3(1,1,0),0.5f));
+
+      //*
+
+      SDFObject* b = new SDFSphere(make_float3(0, 0, 0), 0.8f);
+
+      float r = 0.45f;
+      SDFObject* s1 = new SDFSphere(make_float3(0.5f, 0.5f, 0.5f), r);
+      SDFObject* s2 = new SDFSphere(make_float3(0.5f, 0.5f, -0.5f), r);
+      SDFObject* s3 = new SDFSphere(make_float3(0.5f, -0.5f, 0.5f), r);
+      SDFObject* s4 = new SDFSphere(make_float3(0.5f, -0.5f, -0.5f), r);
+      SDFObject* s5 = new SDFSphere(make_float3(-0.5f, 0.5f, 0.5f), r);
+      SDFObject* s6 = new SDFSphere(make_float3(-0.5f, 0.5f, -0.5f), r);
+      SDFObject* s7 = new SDFSphere(make_float3(-0.5f, -0.5f, 0.5f), r);
+      SDFObject* s8 = new SDFSphere(make_float3(-0.5f, -0.5f, -0.5f), r);
+
+      SDFObject* s12 = new SDFCSGTree(s1, s2, Blendfunction::UNION, 0.0f);
+      SDFObject* s34 = new SDFCSGTree(s3, s4, Blendfunction::UNION, 0.0f);
+      SDFObject* s56 = new SDFCSGTree(s5, s6, Blendfunction::UNION, 0.0f);
+      SDFObject* s78 = new SDFCSGTree(s7, s8, Blendfunction::UNION, 0.0f);
+      SDFObject* s1234 = new SDFCSGTree(s12, s34, Blendfunction::UNION, 0.0f);
+      SDFObject* s5678 = new SDFCSGTree(s56, s78, Blendfunction::UNION, 0.0f);
+      SDFObject* s = new SDFCSGTree(s1234, s5678, Blendfunction::UNION, 0.0f);
+
+      SDFObject* bs= new SDFCSGTree(b, s, Blendfunction::SUBTRACTION, 0.0f);
+      SDFObject* sn = new SDFSphere(make_float3(0.0f, 0, 0.0f), 0.4f);
+
+
+      sdfObjects.push_back(new SDFCSGTree(bs, sn, Blendfunction::SUBTRACTION, 0.1f));
+      /**/
+
+      /*hollow cube
+      SDFObject* a1 = new SDFBox(make_float3(0, 0, 0), 0.5f, 0.5f, 0.5f);
+      SDFObject* a2 = new SDFSphere(make_float3(0.0f, 0, 0.0f), 0.9f);
+      SDFObject* a = new SDFCSGTree(a1, a2, Blendfunction::INTERSECTION, 0.1f);
+      SDFObject* b = new SDFSphere(make_float3(0.0f, 0, 0.0f), 0.5f);
+      sdfObjects.push_back(new SDFCSGTree(a, b, Blendfunction::SUBTRACTION, 0.1f));
+      /**/
+
+      /*cup
+      float3 center = make_float3(0.0f, 0.0f, 0.0f);
+      float3 axis = make_float3(0.0f, 1.0f, 0.0f);
+      float size = 1.0f;
+
+      SDFObject* c1 = new SDFCylinder(center, axis * 1.0 * size, size/2);
+      SDFObject* c2 = new SDFCylinder(center + 0.1 * axis * size, axis*size * 1.0, size * 0.5 * 0.7);
+      SDFObject* c = new SDFCSGTree(c1, c2, Blendfunction::SUBTRACTION, 0.1f);
+
+      sdfObjects.push_back(c);
+      /**/
+
+      scene.add_SDF(sdfObjects, "../models/sdf.mtl", 1);
     init_view();
     float3 eye = make_float3(2.0f, 1.5f, 2.0f);
     float3 lookat = make_float3(0.0f, 0.0, 0.0f);
@@ -307,7 +384,7 @@ void RenderEngine::render()
   {
 	  for (int x = 0; x < static_cast<int>(res.x); ++x)
 	  {
-		  image[x + y * res.x] = tracer.compute_pixel(x, y);
+		  image[x + y * res.x] = tracer.compute_pixel(x, y, rendermode);
 
 		  // Insert the inner loop which runs through each pixel in a row and
 		  // stores the result of calling compute_pixel in the image array.
@@ -594,7 +671,7 @@ void RenderEngine::keyboard(unsigned char key, int x, int y)
     render_engine.decrement_pixel_subdivs();
     break;
   // Press '*' to apply tone mapping
-  case '#':
+  case '*':
     render_engine.apply_tone_map();
     break;
   // Press '/' to unapply tone mapping
@@ -674,6 +751,20 @@ void RenderEngine::keyboard(unsigned char key, int x, int y)
       glutPostRedisplay();
     }
     break;
+  // Press 'v' to switch visualization on/off
+  case 'v':
+  {
+      rendermode = rendermode==2? 0 : 2;
+      cout << "SDF visualization switched " << (rendermode==2 ? "on" : "off") << " (Rendermode "<< rendermode << ")" << endl;
+  }
+  break;
+  // Press 'n' to normal visualization on/off
+  case 'n':
+  {
+      rendermode = rendermode == 1 ? 0 : 1;
+      cout << "Normal visualization switched " << (rendermode == 1 ? "on" : "off") << " (Rendermode " << rendermode << ")" << endl;
+  }
+  break;
   // Press 'space' to switch between pre-view and your last tracing result.
   case 32:
     render_engine.undo();

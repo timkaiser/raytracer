@@ -18,3 +18,12 @@ void SDFSphere::transform(const Matrix4x4& m){
 float SDFSphere::distance(const float3& pos) const{
 	return length(pos - center) - radius;
 }
+
+void SDFSphere::add_to_bbox(Aabb& bbox) const {
+    bbox.include(center - make_float3(radius, 0.0f, 0.0f));
+    bbox.include(center + make_float3(radius, 0.0f, 0.0f));
+    bbox.include(center - make_float3(0.0f, radius, 0.0f));
+    bbox.include(center + make_float3(0.0f, radius, 0.0f));
+    bbox.include(center - make_float3(0.0f, 0.0f, radius));
+    bbox.include(center + make_float3(0.0f, 0.0f, radius));
+}

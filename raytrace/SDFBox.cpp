@@ -17,3 +17,14 @@ float SDFBox::distance(const float3& pos) const {
 
     return length(q) + min(max(q.x, max(q.y, q.z)), 0.0);
 }
+
+void SDFBox::add_to_bbox(Aabb& bbox) const {
+    bbox.include(center + make_float3(bounds.x, bounds.y, bounds.z));
+    bbox.include(center + make_float3(bounds.x, bounds.y, -bounds.z));
+    bbox.include(center + make_float3(bounds.x, -bounds.y, bounds.z));
+    bbox.include(center + make_float3(bounds.x, -bounds.y, -bounds.z));
+    bbox.include(center + make_float3(-bounds.x, bounds.y, bounds.z));
+    bbox.include(center + make_float3(-bounds.x, bounds.y, -bounds.z));
+    bbox.include(center + make_float3(-bounds.x, -bounds.y, bounds.z));
+    bbox.include(center + make_float3(-bounds.x, -bounds.y, -bounds.z));
+}

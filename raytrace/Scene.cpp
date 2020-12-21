@@ -147,14 +147,14 @@ void Scene::add_triangle(const float3& v0, const float3& v1, const float3& v2, c
   bbox.include(triangle->compute_bbox());
 }
 
-void Scene::add_SDF(const float3& center, float radius, const string& mtl_file, unsigned int idx)
+void Scene::add_SDF(std::vector<SDFObject*> sdfObjects, const string& mtl_file, unsigned int idx)
 {
 	vector<ObjMaterial> m;
 	if (!mtl_file.empty())
 		mtl_load(mtl_file, m);
 	if (m.size() == 0)
 		m.push_back(ObjMaterial());
-	SDF* sdf = new SDF(center, radius, idx < m.size() ? m[idx] : m.back());
+	SDF* sdf = new SDF(sdfObjects, idx < m.size() ? m[idx] : m.back());
 	//SDFs.push_back(sdf);
 	objects.push_back(sdf);
 	bbox.include(sdf->compute_bbox());

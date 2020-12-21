@@ -103,6 +103,7 @@
     <ClInclude Include="Geometry\SDF.h" />
     <ClInclude Include="GLViewController.h" />
     <ClInclude Include="SDFBox.h" />
+    <ClInclude Include="SDFCylinder.h" />
     <ClInclude Include="SDFSphere.h" />
     <ClInclude Include="SDFCSGTree.h" />
     <ClInclude Include="Holdout.h" />
@@ -123,6 +124,7 @@
     <ClInclude Include="RayCaster.h" />
     <ClInclude Include="RayTracer.h" />
     <ClInclude Include="SDFObject.h" />
+    <ClInclude Include="SDFTorus.h" />
     <ClInclude Include="Tracer.h" />
     <ClInclude Include="Emission.h" />
     <ClInclude Include="Glossy.h" />
@@ -194,8 +196,10 @@
     <ClCompile Include="PhotonCaustics.cpp" />
     <ClCompile Include="SDFBox.cpp" />
     <ClCompile Include="SDFCSGTree.cpp" />
+    <ClCompile Include="SDFCylinder.cpp" />
     <ClCompile Include="SDFObject.cpp" />
     <ClCompile Include="SDFSphere.cpp" />
+    <ClCompile Include="SDFTorus.cpp" />
     <ClCompile Include="Textured.cpp" />
     <ClCompile Include="Transparent.cpp" />
     <ClCompile Include="Volume.cpp" />
